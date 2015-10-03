@@ -73,7 +73,7 @@ public class AccountingExample
     public static class ExampleConsumer extends AsyncConsumer
     {
         @Override
-        protected void processAccountingEvent(AccountingEvent event)
+        protected void processAccountingEvent(Class<?> source, AccountingEvent event)
         {
             System.out.println("Account: [" + event.getTypeId() + "] [" + event.getTimestamp() + "] " + event.toString());
         }

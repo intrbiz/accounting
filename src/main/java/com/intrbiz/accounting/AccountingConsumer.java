@@ -10,7 +10,7 @@ public interface AccountingConsumer
     /**
      * Process an accounting event
      */
-    void account(AccountingEvent event);
+    void account(Class<?> source, AccountingEvent event);
     
     // lifecycle
     

@@ -29,7 +29,7 @@ public class Accounting
      */
     public void account(AccountingEvent event)
     {
-        this.category.account(event);
+        this.category.account(this.source, event);
     }
     
     /**

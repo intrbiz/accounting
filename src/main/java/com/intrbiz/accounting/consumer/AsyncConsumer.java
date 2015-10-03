@@ -11,13 +11,13 @@ import com.intrbiz.accounting.model.AccountingEvent;
 
 public abstract class AsyncConsumer implements Runnable, AccountingConsumer
 {
-    private final BlockingQueue<AccountingEvent> queue;
+    private final BlockingQueue<QueuedAccountingEvent> queue;
     
     private volatile boolean run = false;
     
     public AsyncConsumer(int queueSize)
     {
-        this.queue = new ArrayBlockingQueue<AccountingEvent>(queueSize);
+        this.queue = new ArrayBlockingQueue<QueuedAccountingEvent>(queueSize);
     }
     
     public AsyncConsumer()
@@ -26,11 +26,11 @@ public abstract class AsyncConsumer implements Runnable, AccountingConsumer
     }
 
     @Override
-    public void account(AccountingEvent event)
+    public void account(Class<?> source, AccountingEvent event)
     {
         try
         {
-            this.queue.put(event);
+            this.queue.put(new QueuedAccountingEvent(source, event));
         }
         catch (InterruptedException e)
         {
@@ -46,7 +46,7 @@ public abstract class AsyncConsumer implements Runnable, AccountingConsumer
     @Override
     public void run()
     {
-        AccountingEvent event;
+        QueuedAccountingEvent event;
         while (this.run)
         {
             try
@@ -56,7 +56,7 @@ public abstract class AsyncConsumer implements Runnable, AccountingConsumer
                 {
                     try
                     {
-                        this.processAccountingEvent(event);
+                        this.processAccountingEvent(event.getSource(), event.getEvent());
                     }
                     catch (Exception e)
                     {
@@ -77,5 +77,31 @@ public abstract class AsyncConsumer implements Runnable, AccountingConsumer
         this.run = false;
     }
     
-    protected abstract void processAccountingEvent(AccountingEvent event);
+    protected abstract void processAccountingEvent(Class<?> source, AccountingEvent event);
+    
+    /**
+     * A queue event with additional metadata
+     */
+    public static final class QueuedAccountingEvent
+    {
+        private final Class<?> source;
+        
+        private final AccountingEvent event;
+        
+        public QueuedAccountingEvent(Class<?> source, AccountingEvent event)
+        {
+            this.source = source;
+            this.event = event;
+        }
+
+        public Class<?> getSource()
+        {
+            return source;
+        }
+
+        public AccountingEvent getEvent()
+        {
+            return event;
+        }
+    }
 }

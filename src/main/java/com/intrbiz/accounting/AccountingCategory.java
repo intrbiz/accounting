@@ -108,12 +108,12 @@ public class AccountingCategory implements Comparable<AccountingCategory>
     
     ////////////
     
-    public void account(AccountingEvent event)
+    public void account(Class<?> source, AccountingEvent event)
     {
         if (this.consumers.isEmpty())
         {
             // pass up the chain
-            if (this.parent != null) this.parent.account(event);
+            if (this.parent != null) this.parent.account(source, event);
         }
         else
         {
@@ -122,7 +122,7 @@ public class AccountingCategory implements Comparable<AccountingCategory>
             {
                 try
                 {
-                    consumer.account(event);
+                    consumer.account(source, event);
                 }
                 catch (Exception e)
                 {
