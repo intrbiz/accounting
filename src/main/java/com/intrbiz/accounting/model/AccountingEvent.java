@@ -1,6 +1,5 @@
 package com.intrbiz.accounting.model;
 
-import java.util.Date;
 import java.util.UUID;
 
 public interface AccountingEvent
@@ -13,5 +12,5 @@ public interface AccountingEvent
     /**
      * When did this event happen
      */
-    Date getTimestamp();
+    long getTimestamp();
 }

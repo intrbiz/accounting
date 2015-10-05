@@ -1,6 +1,5 @@
 package accounting;
 
-import java.util.Date;
 import java.util.UUID;
 
 import com.intrbiz.accounting.Accounting;
@@ -14,13 +13,13 @@ public class AccountingExample
     {
         private static final UUID TYPE_ID = UUID.fromString("eb7d4979-768a-4128-a1c2-a6f039005284");
         
-        private final Date timestamp;
+        private final long timestamp;
         
         private final UUID accountId;
         
         private final double value;
         
-        public ExampleEvent(Date timestamp, UUID accountId, double value)
+        public ExampleEvent(long timestamp, UUID accountId, double value)
         {
             this.timestamp = timestamp;
             this.accountId = accountId;
@@ -29,7 +28,7 @@ public class AccountingExample
         
         public ExampleEvent(UUID accountId, double value)
         {
-            this(new Date(), accountId, value);
+            this(System.currentTimeMillis(), accountId, value);
         }
         
         @Override
@@ -39,7 +38,7 @@ public class AccountingExample
         }
         
         @Override
-        public Date getTimestamp()
+        public long getTimestamp()
         {
             return this.timestamp;
         }
